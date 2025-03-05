@@ -1,27 +1,46 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const bcrypt = require('bcrypt');
+const autoIncrement = require('mongoose-sequence')(mongoose); 
 
 //Create Schema
 const UserSchema = new Schema({
-    UserId: {
-        type: Number
+    userId: {
+        type: Number,
+        unique: true
     },
-    FirstName: {
+    firstName: {
         type: String,
         required: true
     },
-    LastName: {
+    lastName: {
         type: String,
         required: true
     },
-    Login: {
+    email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
-    Password: {
+    password: {
         type: String,
         required: true
     }
 });
+
+UserSchema.plugin(autoIncrement, { inc_field: 'userId' });
+
+// UserSchema.pre('save', async function(next) {
+//     if (!this.isModified('password')) return next();  // Only hash password if it's modified
+
+//     try {
+//         const salt = await bcrypt.genSalt(10);
+//         this.password = await bcrypt.hash(this.password, salt);
+//         next();
+//     } catch (err) {
+//         next(err);
+//     }
+// });
+
 
 module.exports = user = mongoose.model("Users", UserSchema);

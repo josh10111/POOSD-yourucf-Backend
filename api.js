@@ -1,15 +1,8 @@
 // api.js
-require('express');
-require('mongodb');
-
-// Require our JWT helper module
-const createJWT = require("./createJWT.js");
+const express = require('express');
+const authRoutes = require('./routes/auth'); 
 
 exports.setApp = function (app, client) {
-  // Load User and Card models
-  const User = require("./models/user.js");
-  const Card = require("./models/card.js");
-
-  
-}
-
+    // Uses router
+    app.use('/api/auth', authRoutes);  // This will handle route /api/auth/register and /api/auth/login
+};

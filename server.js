@@ -36,19 +36,19 @@ mongoose.connect(uri)
 var api = require('./api.js')
 api.setApp( app, mongoose );
 
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader(
-        'Access-Control-Allow-Headers',
-        'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-    );
-    res.setHeader(
-        'Access-Control-Allow-Methods',
-        'GET, POST, PATCH, DELETE, OPTIONS'
-    );
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.setHeader(
+//         'Access-Control-Allow-Headers',
+//         'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+//     );
+//     res.setHeader(
+//         'Access-Control-Allow-Methods',
+//         'GET, POST, PATCH, DELETE, OPTIONS'
+//     );
 
-    next();
-});
+//     next();
+// });//redundant?
 
 // start Node + Express server on port 5000
 app.listen(5000, '0.0.0.0', () => {
