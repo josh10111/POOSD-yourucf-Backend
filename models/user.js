@@ -1,10 +1,12 @@
+//user.js
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 //Create Schema
 const UserSchema = new Schema({
     UserId: {
-        type: Number
+        type: Number,
+        unique: true,
     },
     FirstName: {
         type: String,
@@ -14,7 +16,7 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
-    Login: {
+    Email: {
         type: String,
         required: true
     },
@@ -23,5 +25,13 @@ const UserSchema = new Schema({
         required: true
     }
 });
+
+// // Hash password before saving
+// UserSchema.pre('save', async function(next) {
+//     if (this.isModified('Password')) {
+//         this.Password = await bcrypt.hash(this.Password, 8);
+//     }
+//     next();
+// });
 
 module.exports = user = mongoose.model("Users", UserSchema);
