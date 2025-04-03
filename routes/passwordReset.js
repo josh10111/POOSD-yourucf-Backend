@@ -18,7 +18,7 @@ router.post('/request-reset', async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) {
       // For security reasons, don't reveal if email exists or not
-      return res.status(200).json({ message: 'If your email exists in our system, you will receive a password reset link.' });
+      return res.status(200).json({ message: 'User does not exist' });
     }
     
     // Generate reset token
@@ -31,7 +31,7 @@ router.post('/request-reset', async (req, res) => {
     // Send reset email
     await sendPasswordResetEmail(user.email, resetToken);
     
-    res.status(200).json({ message: 'If your email exists in our system, you will receive a password reset link.' });
+    res.status(200).json({ message: 'Check your email to receive a password reset link.' });
   } catch (error) {
     console.error('Password reset request error:', error);
     res.status(500).json({ error: 'Internal server error' });
