@@ -32,11 +32,12 @@ app.get('/', (req, res) => {
 
 // import routes
 const verifyEmailRoute = require('./routes/verifyEmail');
-
+const passwordResetRoute = require('./routes/passwordReset');
 
 // Load Routers
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api', verifyEmailRoute);
+app.use('/api', passwordResetRoute);
 app.use('/api/courses', require('./routes/courseRoutes'));
 app.use('/api/plans', require('./routes/planOfStudyRoutes'));
 // =============================

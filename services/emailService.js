@@ -45,4 +45,43 @@ const sendVerificationEmail = async (to, token) => {
   }
 };
 
-module.exports = { sendVerificationEmail };
+const sendPasswordResetEmail = async (to, token) => {
+  const resetUrl = `https://yourucf.com/api/reset-password?token=${token}`;
+
+  const htmlContent = `
+  <div style="font-family: Arial, sans-serif; color: #333; padding: 20px;">
+    <h2 style="color: #0077cc;">Reset Your Password</h2>
+    <p>You requested to reset your password. Click the button below to set a new password:</p>
+    <a href="${resetUrl}" style="
+        display: inline-block;
+        background-color: #F1CA3B;
+        color: #000;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 4px;
+        margin: 10px 0;
+      ">Reset Password</a>
+    <p>If the button doesn't work, copy and paste the following link into your browser:</p>
+    <p style="word-break: break-all;"><a href="${resetUrl}">${resetUrl}</a></p>
+    <p>If you didn't request this password reset, you can safely ignore this email.</p>
+    <p>Thank you,<br/>The Your UCF Team</p>
+  </div>
+`;
+
+  const msg = {
+    to,
+    from: 'no-reply@yourucf.com',
+    subject: 'Reset Your Password',
+    html: htmlContent,
+  };
+
+  try {
+    await sgMail.send(msg);
+    console.log('Password reset email sent');
+  } catch (error) {
+    console.error('Error sending email', error);
+    throw error;
+  }
+};
+
+module.exports = { sendVerificationEmail, sendPasswordResetEmail };
