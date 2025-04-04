@@ -46,7 +46,7 @@ const sendVerificationEmail = async (to, token) => {
 };
 
 const sendPasswordResetEmail = async (to, token) => {
-  const resetUrl = `https://yourucf.com/api/reset-password?token=${token}`;
+  const resetUrl = `https://yourucf.com/resetpassword?token=${token}`;
 
   const htmlContent = `
   <div style="font-family: Arial, sans-serif; color: #333; padding: 20px;">
