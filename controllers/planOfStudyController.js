@@ -53,39 +53,49 @@ const getUserPlanOfStudy = async (req, res) => {
 // Fetch Available Courses (Excluding those already in Plan of Study)
 const getAvailableCourses = async (req, res) => {
     try {
-        console.log("✅ Received request at /api/plans/available/:userId with userId:", req.params.userId);
-
         const userId = req.params.userId;
-        const planOfStudy = await PlanOfStudy.findOne({ studentId: userId });
 
-        console.log("🔍 Retrieved Plan of Study:", planOfStudy);
+        // 1. Get the user's plan with populated courses
+        const planOfStudy = await PlanOfStudy.findOne({ studentId: userId })
+            .populate('semesters.courses.courseId');
 
         if (!planOfStudy) {
-            console.log("❌ No Plan of Study found for user:", userId);
             return res.status(404).json({ error: "Plan of Study not found." });
         }
 
-        // Extract course IDs already in the Plan of Study
-        const userCourseIds = new Set();
+        // 2. Get all course IDs already in the plan (both completed and planned)
+        const plannedCourseIds = new Set();
         planOfStudy.semesters.forEach(semester => {
             semester.courses.forEach(course => {
-                console.log("🔍 Found course in Plan of Study:", course);
                 if (course.courseId) {
-                    userCourseIds.add(course.courseId.toString());
+                    plannedCourseIds.add(course.courseId._id.toString());
                 }
             });
         });
 
-        console.log("🔍 Excluded course IDs (already in Plan of Study):", Array.from(userCourseIds));
+        // 3. Get all courses NOT in the plan
+        const availableCourses = await Course.find({
+            _id: { $nin: Array.from(plannedCourseIds) }
+        });
 
-        // Fetch courses NOT in user's Plan of Study
-        const availableCourses = await Course.find({ courseCode: { $nin: Array.from(userCourseIds) } });
+        // 4. Format response to match your consistent format
+        const response = availableCourses.map(course => ({
+            _id: course._id,
+            courseCode: course.courseCode,
+            name: course.courseName, 
+            description: course.description || "",
+            credits: course.creditHours,
+            semestersOffered: course.semestersOffered || []
+        }));
 
-        console.log("✅ Available Courses Retrieved:", availableCourses.length);
-        res.json(availableCourses);
+        res.json(response);
+
     } catch (error) {
-        console.error("❌ Error fetching available courses:", error);
-        res.status(500).json({ error: "Error fetching available courses", details: error.message });
+        console.error("Error fetching available courses:", error);
+        res.status(500).json({ 
+            error: "Error fetching available courses", 
+            details: error.message 
+        });
     }
 };
 
